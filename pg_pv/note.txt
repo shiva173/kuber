@@ -1,2 +1,3 @@
 # minikube addons enable ingress # add ingress controller
 # minikube start --nodes 3
+# add label node for postgres deployment# kubectl label node minikube-m03 database=true
