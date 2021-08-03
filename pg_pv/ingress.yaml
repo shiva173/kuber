@@ -1,0 +1,14 @@
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: my-ingress
+spec:
+  rules:
+  - host: my-ingres
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: redmain-service
+          servicePort: 3000
