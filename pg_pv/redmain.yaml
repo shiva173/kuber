@@ -2,12 +2,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: redmaine
+  name: redmine
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: redmaine
+      app: redmine
   strategy:
     rollingUpdate:
       maxSurge: 1
@@ -16,19 +16,20 @@ spec:
   template:
     metadata:
       labels:
-        app: redmaine
+        app: redmine
     spec:
+      hostname: redmine
       containers:
       - image: redmine:4.1
-        name: redmaine
+        name: redmine
         env:
-        - name: REDMINE_DATABASE_HOST
-          value: postgres
+        - name: REDMINE_DB_POSTGRES
+          value: db-service # указать сервис пода базы данных так как service это l4 балансировщик
         - name: REDMINE_DB_USERNAME
-          value: redmaine
+          value: redmine
         - name: REDMINE_DB_PASSWORD 
           value: password  
         - name: REDMINE_DB_DATABASE 
-          value: redmaine
+          value: redmine
         ports:
         - containerPort: 3000     
