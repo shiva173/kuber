@@ -1,6 +1,6 @@
 
 # minikube addons list
 # minikube addons enable ingress # add ingress controller
-# minikube start --nodes 3
+# minikube start --network-plugin=cni --cni=calico --nodes=3 # start minikube with calico demon-set
 # add label node for postgres deployment# kubectl label node minikube-m03 database=true
 # kubectl run -it --rm --image amouat/network-utils test bash # test-network docker
