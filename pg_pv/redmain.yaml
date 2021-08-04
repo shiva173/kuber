@@ -2,12 +2,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: redmain
+  name: redmaine
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: redmain
+      app: redmaine
   strategy:
     rollingUpdate:
       maxSurge: 1
@@ -16,19 +16,19 @@ spec:
   template:
     metadata:
       labels:
-        app: redmain
+        app: redmaine
     spec:
       containers:
       - image: redmine:4.1
-        name: redmain
+        name: redmaine
         env:
-        - name: REDMINE_DB_POSTGRES
+        - name: REDMINE_DATABASE_HOST
           value: postgres
         - name: REDMINE_DB_USERNAME
-          value: testuser
+          value: redmaine
         - name: REDMINE_DB_PASSWORD 
           value: password  
         - name: REDMINE_DB_DATABASE 
-          value: testdatabase
+          value: redmaine
         ports:
         - containerPort: 3000     

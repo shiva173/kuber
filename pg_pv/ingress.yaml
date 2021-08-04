@@ -10,7 +10,7 @@ spec:
       paths:
       - path: /
         backend:
-          serviceName: redmain-service
+          serviceName: redmaine-service
           servicePort: 3000
 #  - host: postgres
 #    http:
