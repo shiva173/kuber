@@ -1,0 +1,69 @@
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: prometheus
+spec:
+  serviceName: prometheus-service
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prometheus
+  template:
+    metadata:
+      labels:
+        app: prometheus
+    spec:
+      initContainers:
+      - image: busybox
+        name: mount-premissions-fix
+        command: ["sh", "-c", "chmod 777 /data"]
+        volumeMounts:
+        - name: mount-premissions-fix
+          mountPath: /data
+      serviceAccount: prometheus
+      containers:
+      - image: prom/prometheus:v2.19.2
+        name: prometheus
+        ports:
+        - containerPort: 9090
+        volumeMounts:
+          - name: mount-premissions-fix
+            mountPath: /data
+          - name: prometheus
+            mountPath: /etc/prometheus
+          - name: prometheus-pvc
+            mountPath: /prometheus
+      volumes:
+       - name: prometheus
+         configMap:
+           name: prometheus-conf
+       - name: prometheus-pvc
+         persistentVolumeClaim:
+           claimName: prometheus-pvc
+       # - name: prometheus-pvc
+       #   persistentVolumeClaim:
+       #     claimName: prometheus-pvc
+         # persistentVolumeClaim:
+         #   claimName: prometheus
+
+  #     affinity:
+  #       podAntiAffinity:
+  #         preferredDuringSchedulingIgnoredDuringExecution:
+  #           - weight: 100
+  #             podAffinityTerm:
+  #               labelSelector:
+  #                 matchExpressions:
+  #                   - key: app
+  #                     operator: In
+  #                     values:
+  #                       - rabbitmq
+  #               topologyKey: kubernetes.io/hostname
+  volumeClaimTemplates:
+    - metadata:
+        name: mount-premissions-fix
+      spec:
+        accessModes: ["ReadWriteMany"]
+        resources:
+          requests:
+            storage: 2Gi
