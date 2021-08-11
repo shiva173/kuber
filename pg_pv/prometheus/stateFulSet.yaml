@@ -17,10 +17,10 @@ spec:
       initContainers:
       - image: busybox
         name: mount-premissions-fix
-        command: ["sh", "-c", "chmod 777 /data"]
+        command: ["chown", "-R", "65534:65534", "/prometheus"]
         volumeMounts:
         - name: mount-premissions-fix
-          mountPath: /data
+          mountPath: /prometheus
       serviceAccount: prometheus
       containers:
       - image: prom/prometheus:v2.19.2
@@ -29,18 +29,18 @@ spec:
         - containerPort: 9090
         volumeMounts:
           - name: mount-premissions-fix
-            mountPath: /data
+            mountPath: /prometheus
           - name: prometheus
             mountPath: /etc/prometheus
-          - name: prometheus-pvc
-            mountPath: /prometheus
+          # - name: prometheus-pvc
+          #   mountPath: /prometheus
       volumes:
        - name: prometheus
          configMap:
            name: prometheus-conf
-       - name: prometheus-pvc
-         persistentVolumeClaim:
-           claimName: prometheus-pvc
+       # - name: prometheus-pvc
+       #   persistentVolumeClaim:
+       #     claimName: prometheus-pvc
        # - name: prometheus-pvc
        #   persistentVolumeClaim:
        #     claimName: prometheus-pvc
@@ -63,7 +63,7 @@ spec:
     - metadata:
         name: mount-premissions-fix
       spec:
-        accessModes: ["ReadWriteMany"]
+        accessModes: ["ReadWriteOnce"]
         resources:
           requests:
             storage: 2Gi
