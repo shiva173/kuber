@@ -4,7 +4,12 @@ kind: Deployment
 metadata:
   name: my-deployment
 spec:
-  replicas: 4
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 10% 
+    type: RollingUpdate
+  replicas: 5
   selector:
     matchLabels:
       app: my-app
@@ -37,3 +42,13 @@ spec:
           limits:
             cpu: "0.5"
             memory: 256Mi
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - my-app
+            topologyKey: "kubernetes.io/hostname"
